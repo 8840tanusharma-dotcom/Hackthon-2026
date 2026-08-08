@@ -1,3 +1,4 @@
+const breethMemoryService = require("./breethMemoryService");
 const Agent = require("../models/Agent");
 const Post = require("../models/Post");
 const memoryService = require("./memoryService");
@@ -62,8 +63,15 @@ async function runPublishingCycle(agentId) {
     topic: chosen.title,
   });
 
-  memoryService.rememberPost(agentId, post, chosen.key);
-  return post;
+ memoryService.rememberPost(agentId, post, chosen.key);
+
+await breethMemoryService.rememberPost(
+  agent,
+  post,
+  chosen.title
+);
+
+return post;
 }
 
 module.exports = { initAgent, getFeed, runPublishingCycle };
