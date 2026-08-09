@@ -5,6 +5,7 @@ const memoryService = require("./memoryService");
 const topicDiscoveryService = require("./topicDiscoveryService");
 const editorialService = require("./editorialService");
 const contentGenerationService = require("./contentGenerationService");
+const config = require("../config/config");
 const logger = require("../utils/logger");
 
 /**
@@ -43,11 +44,38 @@ async function runPublishingCycle(agentId) {
   const agent = memoryService.getAgent(agentId);
   if (!agent || agent.status !== "active") return null;
 
-  const candidateTopics = await topicDiscoveryService.fetchLiveTopics(agent.persona);
+  const candidateTopics = await topicDiscoveryService.fetchLiveTopics(
+  agent.persona
+);
 
-  const publishedKeys = memoryService.getPublishedTopicKeys(agentId);
-  const chosen = editorialService.selectTopic(candidateTopics, agent.persona, publishedKeys);
+const publishedKeys = memoryService.getPublishedTopicKeys(agentId);
 
+// Check Breeth memory before editorial selection.
+const memoryAwareTopics = [];
+
+for (const topic of candidateTopics) {
+  const remembered = await breethMemoryService.hasRelatedMemory(
+    agentId,
+    topic.title
+  );
+
+  if (remembered) {
+    logger.info(
+      `[agentService] agent ${agentId}: Breeth memory found previous coverage for "${topic.title}"`
+    );
+    continue;
+  }
+
+
+  memoryAwareTopics.push(topic);
+}
+
+
+const chosen = editorialService.selectTopic(
+  memoryAwareTopics,
+  agent.persona,
+  publishedKeys
+);
   if (!chosen) {
     logger.info(`[agentService] agent ${agentId}: no topic cleared editorial bar this cycle`);
     return null;

@@ -2,32 +2,17 @@ const store = require("../data/store");
 const config = require("../config/config");
 const logger = require("../utils/logger");
 
-/**
- * Memory Service
- * ------------------------------------------------------------------
- * This is the ONLY module that other services/controllers talk to for
- * persistence. It currently delegates to the local in-memory store
- * (server/data/store.js), but every method here is written against an
- * interface that a Breeth-backed implementation could satisfy instead:
- *
- *   - createAgent(agent)
- *   - getAgent(agentId)
- *   - rememberPost(agentId, post)
- *   - getPosts(agentId)
- *   - getPublishedTopicKeys(agentId)
- *
- * TO INTEGRATE BREETH LATER:
- *   1. Implement a `breethMemoryService.js` with the same method names.
- *   2. Switch on `config.memoryProvider` below (or in a small factory)
- *      to export the Breeth-backed version instead of the local one.
- *   3. No controller/service code outside this file needs to change,
- *      since everything already goes through this interface.
- */
-
 function createAgent(agent) {
   store.agents.set(agent.id, agent);
   store.postsByAgent.set(agent.id, []);
-  logger.info(`[memory] created agent ${agent.id} (${agent.persona.name})`);
+  store.chatsByAgent.set(agent.id, []);
+
+  store.persist();
+
+  logger.info(
+    `[memory] created agent ${agent.id} (${agent.persona.name})`
+  );
+
   return agent;
 }
 
@@ -48,30 +33,96 @@ function getPublishedTopicKeys(agentId) {
   return agent ? agent.publishedTopicKeys : [];
 }
 
-/**
- * Persists a new post for an agent and records its topic key so future
- * editorial passes know not to republish it. Trims history to the
- * configured max so memory doesn't grow unbounded in a long-running demo.
- */
 function rememberPost(agentId, post, topicKey) {
   const agent = getAgent(agentId);
+
   if (!agent) {
     throw new Error(`Cannot remember post: unknown agentId ${agentId}`);
   }
 
   const posts = getPosts(agentId);
-  posts.unshift(post); // newest first
+
+  posts.unshift(post);
+
   if (posts.length > config.maxPostsPerAgent) {
     posts.length = config.maxPostsPerAgent;
   }
+
   store.postsByAgent.set(agentId, posts);
 
   if (topicKey) {
     agent.publishedTopicKeys.push(topicKey);
   }
 
-  logger.info(`[memory] agent ${agentId} published post ${post.id}`);
+  store.persist();
+
+  logger.info(
+    `[memory] agent ${agentId} published post ${post.id}`
+  );
+
   return post;
+}
+
+/* =========================
+   CHAT MEMORY
+========================= */
+
+function saveChatMessage(agentId, message) {
+  const agent = getAgent(agentId);
+
+  if (!agent) {
+    throw new Error(`Cannot save chat: unknown agentId ${agentId}`);
+  }
+
+  if (!store.chatsByAgent.has(agentId)) {
+    store.chatsByAgent.set(agentId, []);
+  }
+
+  const history = store.chatsByAgent.get(agentId);
+
+  const chatMessage = {
+    role: message.role,
+    text: message.text,
+    timestamp: new Date().toISOString(),
+  };
+
+  history.push(chatMessage);
+
+  const maxChatMessages = 100;
+
+  if (history.length > maxChatMessages) {
+    history.splice(0, history.length - maxChatMessages);
+  }
+
+  store.chatsByAgent.set(agentId, history);
+
+  store.persist();
+
+  logger.info(
+    `[memory] saved ${message.role} message for agent ${agentId}`
+  );
+
+  return chatMessage;
+}
+
+function getChatHistory(agentId) {
+  return store.chatsByAgent.get(agentId) || [];
+}
+
+function clearChatHistory(agentId) {
+  if (!getAgent(agentId)) {
+    return false;
+  }
+
+  store.chatsByAgent.set(agentId, []);
+
+  store.persist();
+
+  logger.info(
+    `[memory] cleared chat history for agent ${agentId}`
+  );
+
+  return true;
 }
 
 module.exports = {
@@ -81,4 +132,8 @@ module.exports = {
   getPosts,
   getPublishedTopicKeys,
   rememberPost,
+
+  saveChatMessage,
+  getChatHistory,
+  clearChatHistory,
 };

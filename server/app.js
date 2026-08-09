@@ -1,8 +1,10 @@
+const agentRoutes = require("./routes/agentRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 
-const agentRoutes = require("./routes/agentRoutes");
+
 
 const app = express();
 
@@ -15,6 +17,7 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/api/agent", agentRoutes);
+app.use("/api/chat", chatRoutes);
 
 // 404 fallback
 app.use((req, res) => {

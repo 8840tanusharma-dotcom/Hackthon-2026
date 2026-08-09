@@ -95,8 +95,28 @@ async function searchMemory(agentId, query, limit = 5) {
   }
 }
 
+async function hasRelatedMemory(agentId, topicTitle) {
+  const result = await searchMemory(
+    agentId,
+    `Has this agent already published or discussed this topic: ${topicTitle}`,
+    5
+  );
+
+  if (!result || !Array.isArray(result.edges)) {
+    return false;
+  }
+
+  const normalizedTitle = topicTitle.toLowerCase();
+
+  return result.edges.some((edge) => {
+    const fact = String(edge.fact || "").toLowerCase();
+    return fact.includes(normalizedTitle);
+  });
+}
+
 module.exports = {
   rememberPost,
   searchMemory,
+  hasRelatedMemory,
   getGroupId,
 };
