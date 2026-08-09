@@ -24,13 +24,18 @@ async function chat(req, res) {
       });
     }
 
-    const agent = memoryService.getAgent(agentId);
+    let agent = memoryService.getAgent(agentId);
 
-    if (!agent) {
-      return res.status(404).json({
-        error: "Agent not found",
-      });
-    }
+if (!agent) {
+  agent = memoryService.createAgent({
+    id: agentId,
+    persona: {
+      name: persona.name,
+      domain: persona.domain,
+    },
+    publishedTopicKeys: [],
+  });
+}
 
     const userText = message.trim();
 
