@@ -30,6 +30,7 @@ class Post {
       text: this.text,
       rationale: this.rationale,
       sources: this.sources,
+      topic: this.topic,
     };
   }
 }
