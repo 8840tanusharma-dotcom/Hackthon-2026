@@ -1,8 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import ReactMarkdown from "react-markdown";
-
-const API = "http://localhost:4000";
+const API = "https://" + "autonomous-ai-creator-server.onrender.com";
 
 function App() {
   const [name, setName] = useState("");
@@ -201,7 +200,7 @@ function App() {
       <header className="header">
         <div className="brand">
           <div className="logo">
-            ✦
+            âœ¦
           </div>
 
           <div>
@@ -220,7 +219,7 @@ function App() {
         {!agent ? (
           <section className="hero">
             <div className="hero-badge">
-              <span>✦</span>
+              <span>âœ¦</span>
               AUTONOMOUS AI SYSTEM
             </div>
 
@@ -243,7 +242,7 @@ function App() {
                   <p>Give your AI creator a persona and domain.</p>
                 </div>
 
-                <div className="sparkle">✦</div>
+                <div className="sparkle">âœ¦</div>
               </div>
 
               <label>Agent Name</label>
@@ -270,7 +269,7 @@ function App() {
                 ) : (
                   <>
                     Create Autonomous Agent
-                    <span>→</span>
+                    <span>â†’</span>
                   </>
                 )}
               </button>
@@ -309,7 +308,7 @@ function App() {
             <div className="dashboard-top">
               <div>
                 <div className="hero-badge">
-                  <span>●</span>
+                  <span>â—</span>
                   AUTONOMOUS AGENT
                 </div>
 
@@ -334,14 +333,14 @@ function App() {
                   onClick={publishNow}
                   disabled={loading}
                 >
-                  {loading ? "Publishing..." : "✦ Publish Now"}
+                  {loading ? "Publishing..." : "âœ¦ Publish Now"}
                 </button>
               </div>
             </div>
 
             {message && (
               <div className="dashboard-message">
-                <span>✓</span>
+                <span>âœ“</span>
                 {message}
               </div>
             )}
@@ -361,7 +360,7 @@ function App() {
 
               <div className="stat-card">
                 <span>MEMORY</span>
-                <strong>Breeth ✓</strong>
+                <strong>Breeth âœ“</strong>
               </div>
 
               <div className="stat-card">
@@ -374,7 +373,7 @@ function App() {
             <section className="chat-section">
               <div className="chat-header">
                 <div className="chat-title">
-                  <div className="ai-icon">✦</div>
+                  <div className="ai-icon">âœ¦</div>
 
                   <div>
                     <div className="mini-label">AI CONVERSATION</div>
@@ -394,7 +393,7 @@ function App() {
               <div className="chat-box">
                 {chatMessages.length === 0 ? (
                   <div className="chat-empty">
-                    <div className="chat-icon">✦</div>
+                    <div className="chat-icon">âœ¦</div>
                     <h3>Start a conversation</h3>
                     <p>
                       Ask your AI agent anything.
@@ -460,7 +459,7 @@ function App() {
                     chatLoading || !chatInput.trim()
                   }
                 >
-                  {chatLoading ? "..." : "Send →"}
+                  {chatLoading ? "..." : "Send â†’"}
                 </button>
               </form>
             </section>
@@ -481,14 +480,14 @@ function App() {
                 className="refresh-btn"
                 onClick={loadFeed}
               >
-                ↻ Refresh
+                â†» Refresh
               </button>
             </div>
 
             <div className="feed">
               {posts.length === 0 ? (
                 <div className="empty">
-                  <div>✦</div>
+                  <div>âœ¦</div>
                   <h3>No posts yet</h3>
                   <p>
                     Click <strong>Publish Now</strong> to let your
@@ -551,9 +550,9 @@ function App() {
       </main>
 
       <footer>
-        <span>✦</span>
+        <span>âœ¦</span>
         Autonomous AI Creator
-        <span>•</span>
+        <span>â€¢</span>
         Hackathon Project
       </footer>
     </div>
@@ -561,6 +560,11 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
 
 
 
