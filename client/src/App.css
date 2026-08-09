@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+﻿@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 * {
   box-sizing: border-box;
@@ -28,7 +28,7 @@ button {
 .app {
   position: relative;
   min-height: 100vh;
-  overflow: hidden;
+  overflow: visible;
   background:
     radial-gradient(
       circle at 50% -10%,
@@ -955,3 +955,57 @@ footer span {
     gap: 12px;
   }
 }
+.chat-box {
+  height: 480px;
+  min-height: 0;
+  max-height: 480px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 25px;
+  box-sizing: border-box;
+}
+
+.chat-section {
+  overflow: hidden;
+}
+
+
+.chat-section {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+.chat-box {
+  height: 400px !important;
+  min-height: 400px !important;
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  flex: 0 0 400px !important;
+  box-sizing: border-box !important;
+  scrollbar-width: auto !important;
+}
+
+.chat-box::-webkit-scrollbar {
+  width: 10px !important;
+}
+
+.chat-box::-webkit-scrollbar-track {
+  background: #111118 !important;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+  background: #6c3bff !important;
+  border-radius: 10px !important;
+}
+
+.chat-input-area {
+  flex-shrink: 0 !important;
+}
+
+.chat-message {
+  flex-shrink: 0 !important;
+}
+
+
