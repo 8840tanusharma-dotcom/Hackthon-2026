@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import ReactMarkdown from "react-markdown";
 
 const API = "http://localhost:4000";
 
@@ -33,7 +34,8 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          persona: {
+      
+      persona: {
             name,
             domain,
           },
@@ -93,7 +95,8 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          persona: {
+      agentId: agent.id,
+      persona: {
             name: agent.name,
             domain: agent.domain,
           },
@@ -416,7 +419,7 @@ function App() {
                           chat.error ? "error-bubble" : ""
                         }`}
                       >
-                        {chat.text}
+                        <ReactMarkdown>{chat.text}</ReactMarkdown>
                       </div>
                     </div>
                   ))
@@ -558,3 +561,11 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
+
+
+
